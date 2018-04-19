@@ -42,7 +42,6 @@ from cinder.backup.drivers import posix as cinder_backup_drivers_posix
 from cinder.backup.drivers import swift as cinder_backup_drivers_swift
 from cinder.backup.drivers import tsm as cinder_backup_drivers_tsm
 from cinder.backup import manager as cinder_backup_manager
-from cinder.cmd import backup as cinder_cmd_backup
 from cinder.cmd import volume as cinder_cmd_volume
 from cinder.common import config as cinder_common_config
 import cinder.compute
@@ -51,6 +50,7 @@ from cinder import context as cinder_context
 from cinder import coordination as cinder_coordination
 from cinder.db import api as cinder_db_api
 from cinder.db import base as cinder_db_base
+from cinder import exception as cinder_exception
 from cinder.image import glance as cinder_image_glance
 from cinder.image import image_utils as cinder_image_imageutils
 from cinder.keymgr import conf_key_mgr as cinder_keymgr_confkeymgr
@@ -128,6 +128,8 @@ from cinder.volume.drivers.ibm.storwize_svc import storwize_svc_fc as \
 from cinder.volume.drivers.ibm.storwize_svc import storwize_svc_iscsi as \
     cinder_volume_drivers_ibm_storwize_svc_storwizesvciscsi
 from cinder.volume.drivers import infinidat as cinder_volume_drivers_infinidat
+from cinder.volume.drivers.inspur.as13000 import as13000_driver as \
+    cinder_volume_drivers_inspur_as13000_as13000_driver
 from cinder.volume.drivers.inspur.instorage import instorage_common as \
     cinder_volume_drivers_inspur_instorage_instoragecommon
 from cinder.volume.drivers.inspur.instorage import instorage_iscsi as \
@@ -159,8 +161,6 @@ from cinder.volume.drivers import storpool as cinder_volume_drivers_storpool
 from cinder.volume.drivers.synology import synology_common as \
     cinder_volume_drivers_synology_synologycommon
 from cinder.volume.drivers import tintri as cinder_volume_drivers_tintri
-from cinder.volume.drivers.veritas_access import veritas_iscsi as \
-    cinder_volume_drivers_veritas_access_veritasiscsi
 from cinder.volume.drivers.vmware import vmdk as \
     cinder_volume_drivers_vmware_vmdk
 from cinder.volume.drivers import vzstorage as cinder_volume_drivers_vzstorage
@@ -224,7 +224,6 @@ def list_opts():
                 cinder_backup_drivers_swift.swiftbackup_service_opts,
                 cinder_backup_drivers_tsm.tsm_opts,
                 cinder_backup_manager.backup_manager_opts,
-                [cinder_cmd_backup.backup_workers_opt],
                 [cinder_cmd_volume.cluster_opt],
                 cinder_common_config.core_opts,
                 cinder_common_config.global_opts,
@@ -232,6 +231,7 @@ def list_opts():
                 cinder_context.context_opts,
                 cinder_db_api.db_opts,
                 [cinder_db_base.db_driver_opt],
+                cinder_exception.exc_log_opts,
                 cinder_image_glance.glance_opts,
                 cinder_image_glance.glance_core_properties_opts,
                 cinder_image_imageutils.image_helper_opts,
@@ -256,12 +256,13 @@ def list_opts():
                 cinder_volume_driver.iser_opts,
                 cinder_volume_drivers_datacore_driver.datacore_opts,
                 cinder_volume_drivers_datacore_iscsi.datacore_iscsi_opts,
+                cinder_volume_drivers_inspur_as13000_as13000_driver.
+                inspur_as13000_opts,
                 cinder_volume_drivers_inspur_instorage_instoragecommon.
                 instorage_mcs_opts,
                 cinder_volume_drivers_inspur_instorage_instorageiscsi.
                 instorage_mcs_iscsi_opts,
                 cinder_volume_drivers_storpool.storpool_opts,
-                cinder_volume_drivers_veritas_access_veritasiscsi.VA_VOL_OPTS,
                 cinder_volume_manager.volume_manager_opts,
                 cinder_wsgi_eventletserver.socket_opts,
             )),
